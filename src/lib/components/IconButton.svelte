@@ -1,11 +1,15 @@
 <script>
 	export let icon;
-    export let label
+	export let label;
+	let button;
+	export function getButton() {
+		return button;
+	}
 </script>
 
-<button on:click on:mouseover on:focus on:keydown {...$$restProps}>
+<button bind:this={button} on:click on:mouseover on:focus on:keydown {...$$restProps}>
 	<svelte:component this={icon} color="var(--text-color)" aria-hidden={true} focusable={false} />
-    <span class="visually-hidden">{label}</span>
+	<span class="visually-hidden">{label}</span>
 </button>
 
 <style lang="scss">

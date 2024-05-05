@@ -1,5 +1,5 @@
 <script>
-	import { Home, Search, ListMusic, Menu } from 'lucide-svelte';
+	import { Home, Search, ListMusic, Menu, X } from 'lucide-svelte';
 	import logo from '$assets/logo.png';
 	import { page } from '$app/stores';
 	import { fade } from 'svelte/transition';
@@ -15,12 +15,12 @@
 	const openMenu = async () => {
 		isMobileMenuOpen = true;
 		await tick();
-		closeMenuButton?.focus();
+		closeMenuButton?.getButton()?.focus();
 	};
 	const closeMenu = async () => {
 		isMobileMenuOpen = false;
 		await tick();
-		openMenuButton?.focus();
+		openMenuButton?.getButton()?.focus();
 	};
 	const moveFocusToBottom = (event) => {
 		if (desktop) return;
@@ -33,7 +33,7 @@
 		if (desktop) return;
 		if (event?.key === 'Tab' && !event?.shiftKey) {
 			event?.preventDefault();
-			closeMenuButton?.focus();
+			closeMenuButton?.getButton()?.focus();
 		}
 	};
 	const handleEscPress = (event) => {
@@ -73,8 +73,14 @@
 	{/if}
 	<nav aria-label="Main">
 		{#if !desktop}
-			<IconButton icon={Menu} label="Open menu" />
-			<button bind:this={openMenuButton} on:click={openMenu} aria-expanded={isOpen}>Open</button>
+			<IconButton
+				bind:this={openMenuButton}
+				on:click={openMenu}
+				aria-expanded={isOpen}
+				icon={Menu}
+				label="Open menu"
+				class="menu-button"
+			/>
 		{/if}
 		<div
 			class="nav-content-inner"
@@ -84,11 +90,17 @@
 			role="button"
 			tabindex="0"
 		>
-			{#if !desktop}<button
+			{#if !desktop}
+				<IconButton
 					bind:this={closeMenuButton}
 					on:click={closeMenu}
-					on:keydown={moveFocusToBottom}>Close</button
-				>{/if}
+					on:keydown={moveFocusToBottom}
+					icon={X}
+					label="Close menu"
+					class="close-menu-button"
+				/>
+				<button>Close</button>
+			{/if}
 			<img src={logo} class="logo" alt="Spotify" />
 			<ul>
 				{#each menuItems as item, index}
@@ -203,6 +215,16 @@
 			@include breakpoint.down('md') {
 				display: block;
 			}
+		}
+		:global(.menu-button) {
+			@include breakpoint.up('md') {
+				display: none;
+			}
+		}
+		:global(.close-menu-button) {
+			position: absolute;
+			right: 20px;
+			top: 20px;
 		}
 	}
 </style>
