@@ -1,10 +1,11 @@
 <script>
-	import { Home, Search, ListMusic } from 'lucide-svelte';
+	import { Home, Search, ListMusic, Menu } from 'lucide-svelte';
 	import logo from '$assets/logo.png';
 	import { page } from '$app/stores';
 	import { fade } from 'svelte/transition';
 	import { tick } from 'svelte';
 	import { beforeNavigate } from '$app/navigation';
+	import { IconButton } from '$components';
 	export let desktop;
 	let isMobileMenuOpen = false;
 	$: isOpen = desktop || isMobileMenuOpen;
@@ -71,9 +72,10 @@
 		/>
 	{/if}
 	<nav aria-label="Main">
-		{#if !desktop}<button bind:this={openMenuButton} on:click={openMenu} aria-expanded={isOpen}
-				>Open</button
-			>{/if}
+		{#if !desktop}
+			<IconButton icon={Menu} label="Open menu" />
+			<button bind:this={openMenuButton} on:click={openMenu} aria-expanded={isOpen}>Open</button>
+		{/if}
 		<div
 			class="nav-content-inner"
 			class:is-hidden={!isOpen}
