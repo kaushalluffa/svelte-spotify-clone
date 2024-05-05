@@ -2,17 +2,56 @@
 	import { Home, Search, ListMusic } from 'lucide-svelte';
 	import logo from '$assets/logo.png';
 	import { page } from '$app/stores';
+	import { fade } from 'svelte/transition';
+	import { tick } from 'svelte';
+    import { beforeNavigate } from '$app/navigation';
 	export let desktop;
+	let isMobileMenuOpen = false;
+	$: isOpen = desktop || isMobileMenuOpen;
+	let openMenuButton;
+	let closeMenuButton;
+	const openMenu = async () => {
+		isMobileMenuOpen = true;
+		await tick();
+		closeMenuButton?.focus();
+	};
+	const closeMenu = async () => {
+		isMobileMenuOpen = false;
+		await tick();
+		openMenuButton?.focus();
+	};
 	const menuItems = [
 		{ path: '/', label: 'Home', icon: Home },
 		{ path: '/search', label: 'Search', icon: Search },
 		{ path: '/playlists', label: 'Playlists', icon: ListMusic }
 	];
+	beforeNavigate(() => {
+		isMobileMenuOpen = false;
+	});
 </script>
 
+<svelte:head>
+	{#if !desktop && isMobileMenuOpen}
+		<style>
+			body {
+				overflow: hidden;
+			}
+		</style>
+	{/if}
+</svelte:head>
 <div class="nav-content" class:desktop class:mobile={!desktop}>
+	{#if !desktop && isMobileMenuOpen}
+		<div class="overlay" on:click={closeMenu} transition:fade={{ duration: 200 }} />{/if}
 	<nav aria-label="Main">
-		<div class="nav-content-inner">
+		{#if !desktop}<button bind:this={openMenuButton} on:click={openMenu} aria-expanded={isOpen}
+				>Open</button
+			>{/if}
+		<div
+			class="nav-content-inner"
+			class:is-hidden={!isOpen}
+			style:visibility={isOpen ? 'visible' : 'hidden'}
+		>
+			{#if !desktop}<button bind:this={closeMenuButton} on:click={closeMenu}>Close</button>{/if}
 			<img src={logo} class="logo" alt="Spotify" />
 			<ul>
 				{#each menuItems as item}
@@ -36,6 +75,19 @@
 
 <style lang="scss">
 	.nav-content {
+		.overlay {
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+			background-color: var(--sidebar-color);
+			opacity: 0.75;
+			z-index: 100;
+			@include breakpoint.up('md') {
+				display: none;
+			}
+		}
 		.logo {
 			max-width: 100%;
 			width: 130px;
@@ -86,6 +138,26 @@
 				@include breakpoint.up('md') {
 					display: block;
 				}
+			}
+		}
+		&.mobile .nav-content-inner {
+			position: fixed;
+			top: 0;
+			left: 0;
+			z-index: 100;
+			transition:
+				transform 200ms,
+				opacity 200ms;
+			&.is-hidden {
+				transition:
+					transform 200ms,
+					opacity 200ms,
+					visibility 200ms;
+				opacity: 0;
+				transform: translateX(-100%);
+			}
+			@include breakpoint.down('md') {
+				display: block;
 			}
 		}
 	}

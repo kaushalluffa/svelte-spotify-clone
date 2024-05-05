@@ -1,7 +1,7 @@
 <script>
 	import 'modern-normalize/modern-normalize.css';
 	import '../styles/main.scss';
-	import { Navigation } from '$components';
+	import { Navigation, Header } from '$components';
 	export let data;
 	let topbar;
 	let scrollY;
@@ -27,7 +27,7 @@
 				style:background-color="var(--header-colo)"
 				style:opacity={headerOpacity}
 			/>
-			Topbar
+			<Header />
 		</div>
 		<main id="main-content" class:logged-in={user}>
 			<slot />
