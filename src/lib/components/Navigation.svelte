@@ -44,7 +44,7 @@
 	const menuItems = [
 		{ path: '/', label: 'Home', icon: Home },
 		{ path: '/search', label: 'Search', icon: Search },
-		{ path: '/playlists', label: 'Playlists', icon: ListMusic }
+		{ path: '/playlists', label: 'Playlists', icon: ListMusic },
 	];
 	beforeNavigate(() => {
 		isMobileMenuOpen = false;
@@ -108,11 +108,15 @@
 						focusable: 'false',
 						'aria-hidden': 'true',
 						color: 'var(--text-color)',
-						size: 26
+						size: 26,
 					}}
 					<li class:active={item?.path === $page?.url?.pathname}>
 						{#if menuItems?.length === index + 1}
-							<a bind:this={lastFocusableElement} href={item?.path} on:keydown={moveFocusToTop}>
+							<a
+								bind:this={lastFocusableElement}
+								href={item?.path}
+								on:keydown={moveFocusToTop}
+							>
 								<svelte:component this={item?.icon} {...iconProps} />
 								{item?.label}
 							</a>

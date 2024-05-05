@@ -7,8 +7,20 @@
 	}
 </script>
 
-<button bind:this={button} on:click on:mouseover on:focus on:keydown {...$$restProps}>
-	<svelte:component this={icon} color="var(--text-color)" aria-hidden={true} focusable={false} />
+<button
+	bind:this={button}
+	on:click
+	on:mouseover
+	on:focus
+	on:keydown
+	{...$$restProps}
+>
+	<svelte:component
+		this={icon}
+		color="var(--text-color)"
+		aria-hidden={true}
+		focusable={false}
+	/>
 	<span class="visually-hidden">{label}</span>
 </button>
 

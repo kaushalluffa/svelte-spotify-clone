@@ -5,13 +5,13 @@ export const load = async ({ cookies, fetch, url }) => {
 	const refreshToken = cookies.get('refresh_token');
 	if (!accessToken) {
 		return {
-			user: null
+			user: null,
 		};
 	}
 	const profileResponse = await fetch(`${SPOTIFY_BASE_URL}/me`, {
 		headers: {
-			Authorization: `Bearer ${accessToken}`
-		}
+			Authorization: `Bearer ${accessToken}`,
+		},
 	});
 	if (profileResponse?.ok) {
 		const profile = await profileResponse.json();

@@ -6,14 +6,14 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			$components: 'src/lib/components',
-			$assets: 'src/assets'
-		}
+			$assets: 'src/assets',
+		},
 	},
 	preprocess: preprocess({
 		scss: {
-			prependData: `@use "src/styles/functions"; @use "@unsass/breakpoint";`
-		}
-	})
+			prependData: `@use "src/styles/functions"; @use "@unsass/breakpoint";`,
+		},
+	}),
 };
 
 export default config;

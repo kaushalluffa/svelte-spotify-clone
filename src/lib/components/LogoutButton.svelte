@@ -8,7 +8,7 @@
 	on:submit|preventDefault={async () => {
 		const response = await fetch('/api/auth/logout', {
 			method: 'POST',
-			headers: { accept: 'application/json' }
+			headers: { accept: 'application/json' },
 		});
 		if (response?.ok) {
 			invalidateAll();

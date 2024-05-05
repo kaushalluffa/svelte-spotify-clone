@@ -8,7 +8,8 @@
 	let headerOpacity = 0;
 	$: user = data?.user;
 	$: if (topbar) {
-		headerOpacity = scrollY / topbar?.offsetHeight < 1 ? scrollY / topbar?.offsetHeight : 1;
+		headerOpacity =
+			scrollY / topbar?.offsetHeight < 1 ? scrollY / topbar?.offsetHeight : 1;
 	}
 </script>
 

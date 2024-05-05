@@ -1,4 +1,7 @@
-import { SPOTIFY_APP_CLIENT_ID, SPOTIFY_APP_CLIENT_SECRET } from '$env/static/private';
+import {
+	SPOTIFY_APP_CLIENT_ID,
+	SPOTIFY_APP_CLIENT_SECRET,
+} from '$env/static/private';
 import { error, json } from '@sveltejs/kit';
 export const GET = async ({ cookies }) => {
 	const refreshToken = cookies.get('refresh_token');
@@ -6,12 +9,12 @@ export const GET = async ({ cookies }) => {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
-			Authorization: `Basic ${Buffer.from(`${SPOTIFY_APP_CLIENT_ID}:${SPOTIFY_APP_CLIENT_SECRET}`).toString('base64')}`
+			Authorization: `Basic ${Buffer.from(`${SPOTIFY_APP_CLIENT_ID}:${SPOTIFY_APP_CLIENT_SECRET}`).toString('base64')}`,
 		},
 		body: new URLSearchParams({
 			grant_type: 'refresh_token',
-			refresh_token: refreshToken || ''
-		})
+			refresh_token: refreshToken || '',
+		}),
 	});
 	const data = await response.json();
 	if (data?.error) {

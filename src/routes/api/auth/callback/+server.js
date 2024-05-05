@@ -1,10 +1,15 @@
 import { error, redirect } from '@sveltejs/kit';
-import { SPOTIFY_APP_CLIENT_ID, SPOTIFY_APP_CLIENT_SECRET, BASE_URL } from '$env/static/private';
+import {
+	SPOTIFY_APP_CLIENT_ID,
+	SPOTIFY_APP_CLIENT_SECRET,
+	BASE_URL,
+} from '$env/static/private';
 export const GET = async ({ url, cookies }) => {
 	const code = url?.searchParams?.get('code') || null;
 	const state = url?.searchParams?.get('state') || null;
 	const storedSate = cookies.get('spotify_auth_state') || null;
-	const storedChallengeVerifier = cookies.get('spotify_auth_challenge_verify') || null;
+	const storedChallengeVerifier =
+		cookies.get('spotify_auth_challenge_verify') || null;
 	if (state === null || state !== storedSate) {
 		throw error(400, 'State mismatch');
 	}
@@ -12,15 +17,15 @@ export const GET = async ({ url, cookies }) => {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
-			Authorization: `Basic ${Buffer.from(`${SPOTIFY_APP_CLIENT_ID}:${SPOTIFY_APP_CLIENT_SECRET}`).toString('base64')}`
+			Authorization: `Basic ${Buffer.from(`${SPOTIFY_APP_CLIENT_ID}:${SPOTIFY_APP_CLIENT_SECRET}`).toString('base64')}`,
 		},
 		body: new URLSearchParams({
 			grant_type: 'authorization_code',
 			code: code || '',
 			redirect_uri: `${BASE_URL}/api/auth/callback`,
 			client_id: SPOTIFY_APP_CLIENT_ID,
-			code_verifier: storedChallengeVerifier || ''
-		})
+			code_verifier: storedChallengeVerifier || '',
+		}),
 	});
 	const data = await response.json();
 	if (data?.error) {
