@@ -8,8 +8,7 @@
 	let headerOpacity = 0;
 	$: user = data?.user;
 	$: if (topbar) {
-		headerOpacity =
-			scrollY / topbar?.offsetHeight < 1 ? scrollY / topbar?.offsetHeight : 1;
+		headerOpacity = scrollY / topbar?.offsetHeight < 1 ? scrollY / topbar?.offsetHeight : 1;
 	}
 </script>
 
@@ -22,14 +21,16 @@
 		</div>
 	{/if}
 	<div id="content">
-		<div id="topbar" bind:this={topbar}>
-			<div
-				class="topbar-bg"
-				style:background-color="var(--header-colo)"
-				style:opacity={`${headerOpacity}`}
-			/>
-			<Header />
-		</div>
+		{#if user}
+			<div id="topbar" bind:this={topbar}>
+				<div
+					class="topbar-bg"
+					style:background-color="var(--header-colo)"
+					style:opacity={`${headerOpacity}`}
+				/>
+				<Header />
+			</div>
+		{/if}
 		<main id="main-content" class:logged-in={user}>
 			<slot />
 		</main>
