@@ -7,13 +7,14 @@ const config = {
 		alias: {
 			$components: 'src/lib/components',
 			$assets: 'src/assets',
-		},
+			$actions: 'src/lib/actions'
+		}
 	},
 	preprocess: preprocess({
 		scss: {
-			prependData: `@use "src/styles/functions"; @use "@unsass/breakpoint";`,
-		},
-	}),
+			prependData: `@use "src/styles/functions"; @use "@unsass/breakpoint";`
+		}
+	})
 };
 
 export default config;
