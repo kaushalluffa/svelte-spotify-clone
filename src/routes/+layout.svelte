@@ -1,8 +1,15 @@
 <script>
+	import { hideAll } from 'tippy.js';
+	import { beforeNavigate, afterNavigate } from '$app/navigation';
 	import 'modern-normalize/modern-normalize.css';
 	import '../styles/main.scss';
 	import { Navigation, Header } from '$components';
+	import { page } from '$app/stores';
+	import NProgress from 'nprogress';
+	import 'nprogress/nprogress.css';
+
 	export let data;
+	NProgress.configure({ showSpinner: false });
 	let topbar;
 	let scrollY;
 	let headerOpacity = 0;
@@ -10,10 +17,22 @@
 	$: if (topbar) {
 		headerOpacity = scrollY / topbar?.offsetHeight < 1 ? scrollY / topbar?.offsetHeight : 1;
 	}
+	afterNavigate(() => {
+		NProgress.done();
+	});
+	beforeNavigate(() => {
+		NProgress.start();
+		hideAll();
+	});
 </script>
 
 <svelte:window bind:scrollY />
-
+<svelte:head>
+	<title>Spotify Clone - {$page?.data?.title ? `${$page?.data?.title}` : ''}</title>
+</svelte:head>
+{#if user}
+	<a href="#main-content" class="skip-link">Skip to content</a>
+{/if}
 <div id="main">
 	{#if user}
 		<div class="sidebar">
