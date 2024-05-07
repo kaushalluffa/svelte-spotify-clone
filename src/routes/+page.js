@@ -1,5 +1,8 @@
-export const load = async ({ fetch, parent }) => {
+import fetchRefresh from '$helpers/fetch-refresh.js';
+
+export const load = async ({ fetch: _fetch, parent }) => {
 	const { user } = await parent();
+	const fetch = (path) => fetchRefresh(_fetch, path);
 	const newReleases = fetch('/api/spotify/browse/new-releases?limit=6');
 	const featuredPlaylists = fetch('/api/spotify/browse/featured-playlists?limit=6');
 	const userPlaylists = fetch(`/api/spotify/users/${user?.id}/playlists?limit=6`);
