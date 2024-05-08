@@ -7,5 +7,14 @@ export const load = async ({ fetch, params }) => {
 		throw error(albumRes?.status, 'Failed to load album');
 	}
 	const albumJson = await albumRes.json();
-	return { album: albumJson, title: albumJson?.name };
+	let color = null;
+	if (albumJson?.images?.length > 0) {
+		const colorRes = await fetch(
+			`/api/average-color?${new URLSearchParams({ image: albumJson?.images?.[0]?.url })?.toString()}`
+		);
+		if (colorRes?.ok) {
+			color = (await colorRes.json())?.color;
+		}
+	}
+	return { album: albumJson, title: albumJson?.name, color };
 };

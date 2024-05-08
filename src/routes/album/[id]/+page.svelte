@@ -3,12 +3,13 @@
 	export let data;
 	import { getCopyrightSymbol } from '$helpers';
 	$: album = data?.album;
+	$: color = data?.color;
 </script>
 
 <ItemPage
 	type={album?.album_type}
 	title={album?.name}
-	color={undefined}
+	{color}
 	image={album?.images?.length > 0 ? album?.images?.[0]?.url : undefined}
 >
 	<p class="meta" slot="meta">
