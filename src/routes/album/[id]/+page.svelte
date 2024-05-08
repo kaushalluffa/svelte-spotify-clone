@@ -14,9 +14,9 @@
 	<p class="meta" slot="meta">
 		<span class="artists">{album?.artists?.map((item) => item?.name)?.join(', ')}</span>
 		<span class="date">{new Date(album?.release_date)?.getFullYear()}</span>
-		<span class="tracks-count"
-			>{`${album?.total_tracks} Track${album?.total_tracks > 1 ? 's' : ''}`}</span
-		>
+		<span class="tracks-count">
+			{`${album?.total_tracks} Track${album?.total_tracks > 1 ? 's' : ''}`}
+		</span>
 	</p>
 	<div class="tracks">
 		<ul>
@@ -38,6 +38,18 @@
 </ItemPage>
 
 <style lang="scss">
+	.meta {
+		font-size: functions.toRem(13);
+		font-weight: 600;
+		span {
+			margin-right: 5px;
+			&.tracks-count {
+				font-weight: 400;
+				margin: 0 0 0 5px;
+				color: var(--light-gray);
+			}
+		}
+	}
 	.credits {
 		margin-trim: 40px;
 		p {
