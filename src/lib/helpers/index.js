@@ -1,1 +1,1 @@
-export {default as fetchRefresh} from './fetch-refresh';
+export { default as fetchRefresh } from './fetch-refresh';

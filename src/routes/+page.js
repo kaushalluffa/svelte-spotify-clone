@@ -14,15 +14,28 @@ export const load = async ({ fetch: _fetch, parent }) => {
 	const randomCategoriesPromises = randomCategories?.map((category) =>
 		fetch(`/api/spotify/browse/categories/${category?.id}/playlists?limit=6`)
 	);
-	const [newReleasesRes, featuredPlaylistsRes, userPlaylistsRes, ...randomCategoriesRes] =
-		await Promise.all([newReleases, featuredPlaylists, userPlaylists, ...randomCategoriesPromises]);
-	return {
-		newReleases: newReleasesRes?.ok ? newReleasesRes?.json() : undefined,
-		featuredPlaylists: featuredPlaylistsRes?.ok ? featuredPlaylistsRes?.json() : undefined,
-		userPlaylists: userPlaylistsRes?.ok ? userPlaylistsRes?.json() : undefined,
-		homeCategories: randomCategoriesRes,
-		categoriesPlaylists: Promise.all(
-			randomCategoriesRes?.map((response) => (response?.ok ? response?.json() : undefined))
+	const [newReleasesRes, featuredPlaylistsRes, userPlaylistsRes] = await Promise.all([
+		newReleases,
+		featuredPlaylists,
+		userPlaylists
+	]);
+	const randomCategoriesRes = await Promise.all(randomCategoriesPromises);
+	const newReleasesData = newReleasesRes?.ok ? await newReleasesRes?.json() : undefined;
+	const featuredPlaylistsData = featuredPlaylistsRes?.ok
+		? await featuredPlaylistsRes?.json()
+		: undefined;
+	const userPlaylistsData = userPlaylistsRes?.ok ? await userPlaylistsRes?.json() : undefined;
+	const categoriesPlaylistsData = await Promise.all(
+		randomCategoriesRes?.map(async (response) =>
+			response?.ok ? await response?.json() : undefined
 		)
+	);
+
+	return {
+		newReleases: newReleasesData,
+		featuredPlaylists: featuredPlaylistsData,
+		userPlaylists: userPlaylistsData,
+		homeCategories: randomCategories,
+		categoriesPlaylists: categoriesPlaylistsData
 	};
 };
