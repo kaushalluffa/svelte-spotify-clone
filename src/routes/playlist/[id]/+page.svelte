@@ -1,9 +1,12 @@
 <script>
 	import { ItemPage, TrackList, Button } from '$components';
+	import { page } from '$app/stores';
 	export let data;
 	$: color = data?.color;
 	$: playlist = data?.playlist;
 	$: tracks = data?.playlist?.tracks;
+	$: currentPage = $page?.url?.searchParams?.get('page') || 1;
+	let isLoading = false;
 	let filteredTracks;
 	$: {
 		filteredTracks = [];
@@ -14,6 +17,20 @@
 		});
 	}
 	const followersFormat = Intl.NumberFormat('en', { notation: 'compact' });
+	const loadMoreTracks = async () => {
+		if (!tracks?.next) {
+			return;
+		}
+		isLoading = true;
+		const res = await fetch(tracks?.next?.replace('https://api.spotify.com/v1/', '/api/spotify/'));
+		const resJSON = await res.json();
+		if (res?.ok) {
+			tracks = { ...resJSON, items: [...tracks?.items, ...resJSON?.items] };
+		} else {
+			alert(resJSON?.error?.message || 'Could not load more');
+		}
+		isLoading = false;
+	};
 </script>
 
 <ItemPage
@@ -34,6 +51,41 @@
 	</div>
 	{#if playlist?.tracks?.items?.length > 0}
 		<TrackList tracks={filteredTracks} />
+		{#if tracks?.next}
+			<div class="load-more">
+				<Button disabled={isLoading} on:click={loadMoreTracks} element="button" variant="outline"
+					>Load More <span class="visually-hidden">Tracks</span></Button
+				>
+			</div>
+		{/if}
+		<div class="pagination">
+			<div class="previous">
+				{#if tracks?.previous}
+					<Button
+						element="a"
+						variant="outline"
+						href="{$page?.url?.pathname}?{new URLSearchParams({
+							page: `${Number(currentPage) - 1}`
+						})?.toString()}"
+					>
+						Previous
+					</Button>
+				{/if}
+			</div>
+			<div class="next">
+				{#if tracks?.next}
+					<Button
+						element="a"
+						variant="outline"
+						href="{$page?.url?.pathname}?{new URLSearchParams({
+							page: `${Number(currentPage) + 1}`
+						})?.toString()}"
+					>
+						Next
+					</Button>
+				{/if}
+			</div>
+		</div>
 	{:else}
 		<div class="empty-playlist">
 			<p>No items added to this playlist yet.</p>
@@ -68,6 +120,21 @@
 			&:first-child {
 				font-weight: 600;
 			}
+		}
+	}
+	.load-more {
+		padding: 15px;
+		text-align: center;
+		:global(html.no-js) & {
+			display: none;
+		}
+	}
+	.pagination {
+		display: none;
+		margin-top: 40px;
+		justify-content: space-between;
+		:global(html.no-js) & {
+			display: flex;
 		}
 	}
 </style>

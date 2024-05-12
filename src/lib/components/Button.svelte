@@ -31,7 +31,7 @@
 			border: 2px solid var(--accent-color);
 		}
 		&.button-outline {
-			background-color: none;
+			background: none;
 			color: var(--text-color);
 			border: 2px solid;
 		}
@@ -54,7 +54,8 @@
 			}
 		}
 		&:active {
-			&.button-solid {
+			&.button-solid,
+			&.button-danger {
 				background-image: linear-gradient(rgba(255, 255, 255, 0.1) 0 0);
 			}
 			&.button-outline {
