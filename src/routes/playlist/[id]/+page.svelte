@@ -1,4 +1,5 @@
 <script>
+	import { toasts } from '$stores';
 	import { ItemPage, TrackList, Button } from '$components';
 	import { enhance, applyAction } from '$app/forms';
 	import { page } from '$app/stores';
@@ -34,7 +35,7 @@
 		if (res?.ok) {
 			tracks = { ...resJSON, items: [...tracks?.items, ...resJSON?.items] };
 		} else {
-			alert(resJSON?.error?.message || 'Could not load more');
+			toasts.error(resJSON?.error?.message || 'Could not load more');
 		}
 		isLoading = false;
 	};
@@ -68,11 +69,15 @@
 					isLoadingFollow = true;
 					return async ({ result }) => {
 						isLoadingFollow = false;
-						await applyAction(result);
-						followButton?.focus();
 						if (result?.type === 'success') {
+							await applyAction(result);
 							isFollowing = !isFollowing;
+						} else if (result?.type === 'failure') {
+							toasts.error(result?.detail?.followError);
+						} else {
+							await applyAction(result);
 						}
+						followButton?.focus();
 					};
 				}}
 			>
