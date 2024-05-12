@@ -2,10 +2,15 @@
 	export let element;
 	export let variant = 'solid';
 	export let className = '';
+	let node;
+	export function focus() {
+		node.focus();
+	}
 </script>
 
 <svelte:element
 	this={element}
+	bind:this={node}
 	role="button"
 	class="button button-{variant} {className}"
 	on:click

@@ -16,5 +16,5 @@
 		}
 	}}
 >
-	<Button type="submit">Logout</Button>
+	<Button element="button" type="submit">Logout</Button>
 </form>

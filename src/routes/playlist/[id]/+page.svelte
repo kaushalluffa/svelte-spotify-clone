@@ -1,5 +1,6 @@
 <script>
 	import { ItemPage, TrackList, Button } from '$components';
+	import { enhance, applyAction } from '$app/forms';
 	import { page } from '$app/stores';
 	import { Heart } from 'lucide-svelte';
 	export let data;
@@ -11,6 +12,8 @@
 	$: currentPage = $page?.url?.searchParams?.get('page') || 1;
 	$: isFollowing = data?.isFollowing;
 	let isLoading = false;
+	let isLoadingFollow = false;
+	let followButton;
 	let filteredTracks;
 	$: {
 		filteredTracks = [];
@@ -61,8 +64,25 @@
 				class="follow-form"
 				method="POST"
 				action={`?/${isFollowing ? 'unFollowPlaylist' : 'followPlaylist'}`}
+				use:enhance={() => {
+					isLoadingFollow = true;
+					return async ({ result }) => {
+						isLoadingFollow = false;
+						await applyAction(result);
+						followButton?.focus();
+						if (result?.type === 'success') {
+							isFollowing = !isFollowing;
+						}
+					};
+				}}
 			>
-				<Button element="button" type="submit" variant="outline">
+				<Button
+					bind:this={followButton}
+					disabled={isLoadingFollow}
+					element="button"
+					type="submit"
+					variant="outline"
+				>
 					<Heart
 						aria-hidden="true"
 						focusable="false"
