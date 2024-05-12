@@ -55,6 +55,10 @@
 	.player {
 		audio {
 			display: none;
+			:global(html.no-js) & {
+				display: block;
+				width: 100%;
+			}
 		}
 		button {
 			width: 12px;
@@ -67,6 +71,9 @@
 				fill: var(--text-color);
 				width: 12px;
 				height: 12px;
+			}
+			:global(html.no-js) & {
+				display: none;
 			}
 		}
 	}
