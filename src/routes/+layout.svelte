@@ -1,4 +1,6 @@
 <script>
+	import { browser } from '$app/environment';
+	import MicroModal from 'micromodal';
 	import { hideAll } from 'tippy.js';
 	import { beforeNavigate, afterNavigate } from '$app/navigation';
 	import 'modern-normalize/modern-normalize.css';
@@ -10,6 +12,9 @@
 
 	export let data;
 	NProgress.configure({ showSpinner: false });
+	if (browser) {
+		MicroModal.init();
+	}
 	let topbar;
 	let scrollY;
 	let headerOpacity = 0;

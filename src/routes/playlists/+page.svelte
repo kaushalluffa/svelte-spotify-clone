@@ -1,6 +1,9 @@
 <script>
+	import MicroModal from 'micromodal';
 	import { toasts } from '$stores';
-	import { Button, Card, Pagination } from '$components';
+	import { Button, Card, Pagination, PlaylistForm } from '$components';
+	import { Modal } from '$components';
+	export let form;
 	export let data;
 	$: playlists = data?.userPlaylists;
 	let isLoading = false;
@@ -27,7 +30,14 @@
 	{#if playlists?.items?.length > 0}
 		<div class="title">
 			<h1>{data?.title}</h1>
-			<Button element="a" href="/playlists/new">Add New</Button>
+			<Button
+				element="a"
+				href="/playlists/new"
+				on:click={(e) => {
+					e?.preventDefault();
+					MicroModal.show('add-playlists-modal');
+				}}>Add New</Button
+			>
 		</div>
 		<div class="grid-items">
 			{#each playlists?.items as item}
@@ -42,6 +52,9 @@
 		</div>
 	{/if}
 </div>
+<Modal id="add-playlists-modal" title="Add a new playlist">
+	<PlaylistForm {form} userID={data?.user?.id} action="/playlists/new" />
+</Modal>
 
 <style lang="scss">
 	.content {

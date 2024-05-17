@@ -9,7 +9,7 @@ export const actions = {
 			method: 'PUT'
 		});
 		if (!res.ok) {
-			throw fail(res?.status, { followError: res?.statusText });
+			throw fail(res?.status, { followError: res?.statusText, followForm: true });
 		}
 	},
 
@@ -21,7 +21,7 @@ export const actions = {
 			method: 'DELETE'
 		});
 		if (!res.ok) {
-			throw fail(res?.status, { followError: res?.statusText });
+			throw fail(res?.status, { followError: res?.statusText, followForm: true });
 		}
 	}
 };

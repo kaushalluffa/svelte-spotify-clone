@@ -1,6 +1,8 @@
 <script>
+	import { invalidate } from '$app/navigation';
+	import MicroModal from 'micromodal';
 	import { toasts } from '$stores';
-	import { ItemPage, TrackList, Button } from '$components';
+	import { ItemPage, TrackList, Button, PlaylistForm, Modal } from '$components';
 	import { enhance, applyAction } from '$app/forms';
 	import { page } from '$app/stores';
 	import { Heart } from 'lucide-svelte';
@@ -59,7 +61,17 @@
 	</div>
 	<div class="playlist-actions">
 		{#if data?.user?.id === playlist?.owner?.id}
-			<Button element="a" variant="outline">Edit Playlist</Button>
+			<Button
+				element="a"
+				variant="outline"
+				href="/playlist/{playlist?.id}/edit"
+				on:click={(e) => {
+					e.preventDefault();
+					MicroModal.show('edit-playlist-modal');
+				}}
+			>
+				Edit Playlist
+			</Button>
 		{:else if isFollowing !== null}
 			<form
 				class="follow-form"
@@ -147,6 +159,17 @@
 		</div>
 	{/if}
 </ItemPage>
+<Modal id="edit-playlist-modal" title="Edit {playlist?.name}">
+	<PlaylistForm
+		action="/playlist/{playlist?.id}/edit"
+		{playlist}
+		form={form && 'editForm' in form ? form : null}
+		on:success={() => {
+			MicroModal.close('edit-playlist-modal');
+			invalidate(`/api/spotify/playlists/${playlist?.id}`);
+		}}
+	/>
+</Modal>
 
 <style lang="scss">
 	.empty-playlist {
