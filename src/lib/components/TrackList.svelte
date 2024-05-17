@@ -27,14 +27,14 @@
 			<span class="track-title">Title</span>
 		</div>
 		<div class="duration-column">
-			<Clock8 aria-hidden="true" focusable="false" color="var(--light-gray)" />
+			<Clock8 aria-hidden focusable="false" color="var(--light-gray)" />
 		</div>
 		<div class="actions-column" class:is-owner={isOwner} />
 	</div>
 	{#each tracks as track, index}
-		<div class="row" class:is-current={currentlyPlaying === track?.id}>
+		<div class="row" class:is-current={currentlyPlaying === track.id}>
 			<div class="number-column">
-				{#if currentlyPlaying === track?.id && !isPaused}
+				{#if currentlyPlaying === track.id && !isPaused}
 					<img class="playing-gif" src={playingGif} alt="" />
 				{:else}
 					<span class="number">{index + 1}</span>
@@ -43,32 +43,31 @@
 					<Player
 						{track}
 						on:play={(e) => {
-							currentlyPlaying = e?.detail?.track?.id;
+							currentlyPlaying = e.detail.track.id;
 							isPaused = false;
 						}}
 						on:pause={(e) => {
-							isPaused = e?.detail?.track?.id === currentlyPlaying;
+							isPaused = e.detail.track.id === currentlyPlaying;
 						}}
 					/>
 				</div>
 			</div>
 			<div class="info-column">
 				<div class="track-title">
-					<h4>{track?.name}</h4>
-					{#if track?.explicit}
-						<span class="explicit">EXPLICIT</span>
+					<h4>{track.name}</h4>
+					{#if track.explicit}
+						<span class="explicit">Explicit</span>
 					{/if}
 				</div>
 				<p class="artists">
-					{#each track?.artists as artist, artistIndex}
-						<a href="/artist/{artist?.id}">{artist?.name}</a>
-						{#if artistIndex < track?.artists?.length - 1},
-						{/if}
+					{#each track.artists as artist, artistIndex}
+						<a href="/artist/{artist.id}">{artist.name}</a
+						>{#if artistIndex < track.artists.length - 1}{', '}{/if}
 					{/each}
 				</p>
 			</div>
 			<div class="duration-column">
-				<span class="duration">{msToTime(track?.duration_ms)}</span>
+				<span class="duration">{msToTime(track.duration_ms)}</span>
 			</div>
 			<div class="actions-column" class:is-owner={isOwner}>
 				{#if isOwner}
@@ -102,40 +101,40 @@
 					>
 						<input hidden name="track" value={track.id} />
 						<button
-							disabled={isRemovingFromPlaylist?.includes(track.id)}
 							type="submit"
 							title="Remove {track.name} from playlist"
 							aria-label="Remove {track.name} from playlist"
 							class="remove-pl-button"
+							disabled={isRemovingFromPlaylist.includes(track.id)}
 						>
 							<ListX aria-hidden focusable="false" />
 						</button>
 					</form>
 				{:else}
 					<button
+						title="Add {track.name} to a playlist"
+						aria-label="Add {track.name} to a playlist"
 						class="add-pl-button"
 						disabled={!userPlaylists}
-						title="Add {track?.name} to a playlist"
-						aria-label="Add {track?.name} to a playlist"
 						use:tippy={{
-							content: document.getElementById(`${track?.id}-playlists-menu`),
-							allowHtml: true,
+							content: document.getElementById(`${track.id}-playlists-menu`) || undefined,
+							allowHTML: true,
 							trigger: 'click',
 							interactive: true,
 							theme: 'menu',
 							placement: 'bottom-end',
 							onMount: () => {
-								const template = document.getElementById(`${track?.id}-playlists-menu`);
+								const template = document.getElementById(`${track.id}-playlists-menu`);
 								if (template) {
 									template.style.display = 'block';
 								}
 							}
 						}}
 					>
-						<ListPlus aria-hidden="true" focusable="false" />
+						<ListPlus aria-hidden focusable="false" />
 					</button>
 					{#if userPlaylists}
-						<div id="{track?.id}-playlists-menu" class="playlists-menu" style="display:none;">
+						<div class="playlists-menu" id="{track.id}-playlists-menu" style="display: none;">
 							<div class="playlists-menu-content">
 								<form
 									method="POST"
@@ -165,11 +164,11 @@
 										};
 									}}
 								>
-									<input hidden value={track?.id} name="track" />
+									<input hidden value={track.id} name="track" />
 									<div class="field">
 										<select aria-label="Playlist" name="playlist">
 											{#each userPlaylists as playlist}
-												<option value={playlist?.id}>{playlist?.name}</option>
+												<option value={playlist.id}>{playlist.name}</option>
 											{/each}
 										</select>
 									</div>
@@ -179,7 +178,7 @@
 											element="button"
 											type="submit"
 										>
-											Add <span class="visually-hidden"> {track?.name} to selected playlist.</span>
+											Add <span class="visually-hidden"> {track.name} to selected playlist.</span>
 										</Button>
 									</div>
 								</form>
@@ -257,7 +256,6 @@
 				display: flex;
 				justify-content: flex-end;
 				margin-right: 15px;
-
 				span.number {
 					color: var(--light-gray);
 					font-size: functions.toRem(14);
@@ -323,20 +321,39 @@
 				}
 			}
 			.duration-column {
+				span.duration {
+					color: var(--light-gray);
+					font-size: functions.toRem(14);
+				}
 				@include breakpoint.down('md') {
 					:global(.no-js) & {
 						width: 100%;
 						margin: 10px 0;
 					}
 				}
-				span.duration {
-					color: var(--light-gray);
-					font-size: functions.toRem(14);
-				}
 			}
 			.actions-column {
 				width: 30px;
 				margin-left: 15px;
+				&:not(.is-owner) {
+					:global(html.no-js) & {
+						width: 200px;
+						@include breakpoint.down('md') {
+							margin-left: 0;
+							width: 100%;
+						}
+					}
+				}
+				.add-pl-button {
+					:global(html.no-js) & {
+						display: none;
+					}
+				}
+				.playlists-menu {
+					:global(html.no-js) & {
+						display: block !important;
+					}
+				}
 				.add-pl-button,
 				.remove-pl-button {
 					background: none;
@@ -356,7 +373,19 @@
 				}
 				.playlists-menu-content {
 					padding: 15px;
+					:global(html.no-js) & {
+						padding: 0;
+					}
+					form {
+						:global(html.no-js) & {
+							display: flex;
+							align-items: center;
+						}
+					}
 					.field {
+						:global(html.no-js) & {
+							flex: 1;
+						}
 						select {
 							width: 100%;
 							height: 35px;
@@ -366,6 +395,10 @@
 					.submit-button {
 						margin-top: 10px;
 						text-align: right;
+						:global(html.no-js) & {
+							margin-top: 0;
+							margin-left: 10px;
+						}
 					}
 				}
 			}
