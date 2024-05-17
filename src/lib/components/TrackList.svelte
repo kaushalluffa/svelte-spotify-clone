@@ -5,11 +5,17 @@
 	import { Player, Button } from '$components';
 	import playingGif from '$assets/playing.gif';
 	import { page } from '$app/stores';
+	import { enhance } from '$app/forms';
+	import { toasts } from '$stores';
+	import { hideAll } from 'tippy.js';
+	import { invalidate } from '$app/navigation';
 	export let tracks;
 	let currentlyPlaying = null;
 	let isPaused = false;
 	export let userPlaylists;
 	export let isOwner = false;
+	let isAddingToPlaylist = [];
+	let isRemovingFromPlaylist = [];
 </script>
 
 <div class="tracks">
@@ -66,7 +72,45 @@
 			</div>
 			<div class="actions-column" class:is-owner={isOwner}>
 				{#if isOwner}
-					<ListX aria-hidden="true" focusable="false" />
+					<form
+						method="POST"
+						action="/playlist/{$page.params.id}?/removeItem"
+						use:enhance={({ cancel }) => {
+							if (isRemovingFromPlaylist.includes(track.id)) {
+								cancel();
+							}
+							isRemovingFromPlaylist = [...isRemovingFromPlaylist, track.id];
+							return ({ result }) => {
+								if (result.type === 'error') {
+									toasts.error(result.error.message);
+								}
+								if (result.type === 'redirect') {
+									const url = new URL(`${$page.url.origin}${result.location}`);
+									const error = url.searchParams.get('error');
+									const success = url.searchParams.get('success');
+									if (error) {
+										toasts.error(error);
+									}
+									if (success) {
+										toasts.success(success);
+										invalidate(`/api/spotify/playlists/${$page.params.id}`);
+									}
+								}
+								isRemovingFromPlaylist = isRemovingFromPlaylist.filter((t) => t !== track.id);
+							};
+						}}
+					>
+						<input hidden name="track" value={track.id} />
+						<button
+							disabled={isRemovingFromPlaylist?.includes(track.id)}
+							type="submit"
+							title="Remove {track.name} from playlist"
+							aria-label="Remove {track.name} from playlist"
+							class="remove-pl-button"
+						>
+							<ListX aria-hidden focusable="false" />
+						</button>
+					</form>
 				{:else}
 					<button
 						class="add-pl-button"
@@ -93,7 +137,34 @@
 					{#if userPlaylists}
 						<div id="{track?.id}-playlists-menu" class="playlists-menu" style="display:none;">
 							<div class="playlists-menu-content">
-								<form method="POST" action="/playlist?/addItem&redirect={$page.url.pathname}">
+								<form
+									method="POST"
+									action="/playlist?/addItem&redirect={$page.url.pathname}"
+									use:enhance={({ cancel }) => {
+										if (isAddingToPlaylist.includes(track.id)) {
+											cancel();
+										}
+										isAddingToPlaylist = [...isAddingToPlaylist, track.id];
+										return ({ result }) => {
+											if (result.type === 'error') {
+												toasts.error(result.error.message);
+											}
+											if (result.type === 'redirect') {
+												const url = new URL(`${$page.url.origin}${result.location}`);
+												const error = url.searchParams.get('error');
+												const success = url.searchParams.get('success');
+												if (error) {
+													toasts.error(error);
+												}
+												if (success) {
+													toasts.success(success);
+													hideAll();
+												}
+											}
+											isAddingToPlaylist = isAddingToPlaylist.filter((t) => t !== track.id);
+										};
+									}}
+								>
 									<input hidden value={track?.id} name="track" />
 									<div class="field">
 										<select aria-label="Playlist" name="playlist">
@@ -103,7 +174,11 @@
 										</select>
 									</div>
 									<div class="submit-button">
-										<Button element="button" type="submit">
+										<Button
+											disabled={isAddingToPlaylist.includes(track.id)}
+											element="button"
+											type="submit"
+										>
 											Add <span class="visually-hidden"> {track?.name} to selected playlist.</span>
 										</Button>
 									</div>
@@ -262,7 +337,8 @@
 			.actions-column {
 				width: 30px;
 				margin-left: 15px;
-				.add-pl-button {
+				.add-pl-button,
+				.remove-pl-button {
 					background: none;
 					border: none;
 					padding: 5px;
