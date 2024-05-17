@@ -4,6 +4,8 @@
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import { ChevronDown, ExternalLink } from 'lucide-svelte';
+	export let userAllPlaylists;
+
 	$: user = $page?.data?.user;
 </script>
 

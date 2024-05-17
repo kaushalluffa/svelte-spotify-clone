@@ -1,5 +1,5 @@
 <script>
-	import { invalidate } from '$app/navigation';
+	import { invalidateAll } from '$app/navigation';
 	import MicroModal from 'micromodal';
 	import { toasts } from '$stores';
 	import { ItemPage, TrackList, Button, PlaylistForm, Modal } from '$components';
@@ -90,6 +90,7 @@
 							await applyAction(result);
 						}
 						followButton?.focus();
+						invalidateAll();
 					};
 				}}
 			>
@@ -115,7 +116,11 @@
 		{/if}
 	</div>
 	{#if playlist?.tracks?.items?.length > 0}
-		<TrackList tracks={filteredTracks} />
+		<TrackList
+			tracks={filteredTracks}
+			isOwner={data?.user?.id === playlist?.owner?.id}
+			userPlaylists={data?.userAllPlaylists?.filter((pl) => pl?.owner?.id === data?.user?.id)}
+		/>
 		{#if tracks?.next}
 			<div class="load-more">
 				<Button disabled={isLoading} on:click={loadMoreTracks} element="button" variant="outline"
@@ -166,7 +171,7 @@
 		form={form && 'editForm' in form ? form : null}
 		on:success={() => {
 			MicroModal.close('edit-playlist-modal');
-			invalidate(`/api/spotify/playlists/${playlist?.id}`);
+			invalidateAll();
 		}}
 	/>
 </Modal>
