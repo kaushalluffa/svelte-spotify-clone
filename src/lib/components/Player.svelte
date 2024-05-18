@@ -1,5 +1,6 @@
 <script context="module">
 	let current;
+	export let tabIndex = undefined;
 </script>
 
 <script>
@@ -34,6 +35,7 @@
 		preload="none"
 	/>
 	<button
+		tabindex={tabIndex}
 		aria-label={paused ? `Play ${track?.name}` : `Pause ${track?.name}`}
 		on:click={() => {
 			if (paused) {
@@ -71,6 +73,7 @@
 				fill: var(--text-color);
 				width: 12px;
 				height: 12px;
+				vertical-align: middle;
 			}
 			:global(html.no-js) & {
 				display: none;

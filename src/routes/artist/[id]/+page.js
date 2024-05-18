@@ -32,10 +32,10 @@ export const load = async ({ fetch: _fetch, params, parent, depends, route }) =>
 	return {
 		title: artistResJSON?.name,
 		artist: artistResJSON,
-		artistAlbums: albumsRes?.ok ? albumsRes.json() : undefined,
-		artistAppearsOn: appearsOnRes?.ok ? appearsOnRes.json() : undefined,
-		artistTopTracks: topTracksRes?.ok ? topTracksRes.json() : undefined,
-		artistRelatedArtists: relatedArtistsRes?.ok ? relatedArtistsRes?.json() : undefined,
-		color: colorRes?.ok ? colorRes?.json()?.then((r) => r?.color) : null
+		artistAlbums: albumsRes?.ok ? await albumsRes.json() : undefined,
+		artistAppearsOn: appearsOnRes?.ok ? await appearsOnRes.json() : undefined,
+		artistTopTracks: topTracksRes?.ok ? await topTracksRes.json() : undefined,
+		artistRelatedArtists: relatedArtistsRes?.ok ? await relatedArtistsRes?.json() : undefined,
+		color: colorRes?.ok ? await colorRes?.json()?.then((r) => r?.color) : null
 	};
 };
