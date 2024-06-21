@@ -1,7 +1,5 @@
 # SvelteKit Spotify Clone
 
-Code for my [Svelte & SvelteKit Course](https://www.udemy.com/course/svelte-and-sveltekit).
-
 ## Running the App Locally
 
 After cloning the repository, run `npm install` to install dependencies.
