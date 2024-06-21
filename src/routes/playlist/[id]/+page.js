@@ -14,7 +14,7 @@ export const load = async ({ fetch: _fetch, params, depends, route, url, parent 
 		)
 	]);
 	if (!playlistRes?.ok) {
-		throw error(playlistRes?.status, 'Failed to load playlist');
+		error(playlistRes?.status, 'Failed to load playlist');
 	}
 	let isFollowing = null;
 	if (isFollowingRes?.ok) {
@@ -27,7 +27,7 @@ export const load = async ({ fetch: _fetch, params, depends, route, url, parent 
 			`/api/spotify/playlists/${params?.id}/tracks?${new URLSearchParams({ limit: `${limit}`, offset: `${limit * (Number(page) - 1)}` }).toString()}`
 		);
 		if (!trackRes.ok) {
-			throw error(trackRes.status, 'Failed to load playlist tracks');
+			error(trackRes.status, 'Failed to load playlist tracks');
 		}
 		const trackResJSON = await trackRes.json();
 		playlistResJSON.tracks = trackResJSON;

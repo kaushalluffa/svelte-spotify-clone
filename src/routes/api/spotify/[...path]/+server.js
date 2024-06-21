@@ -11,7 +11,7 @@ export const GET = async ({ cookies, fetch, params, url }) => {
 	const data = await response?.json();
 
 	if (data?.error) {
-		throw error(data?.error?.status, data?.error?.message);
+		error(data?.error?.status, data?.error?.message);
 	}
 	return json(data);
 };

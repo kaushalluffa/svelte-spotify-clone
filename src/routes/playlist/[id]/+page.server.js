@@ -10,7 +10,7 @@ export const actions = {
 			method: 'PUT'
 		});
 		if (!res.ok) {
-			throw fail(res?.status, { followError: res?.statusText, followForm: true });
+			fail(res?.status, { followError: res?.statusText, followForm: true });
 		}
 	},
 
@@ -22,7 +22,7 @@ export const actions = {
 			method: 'DELETE'
 		});
 		if (!res.ok) {
-			throw fail(res?.status, { followError: res?.statusText, followForm: true });
+			fail(res?.status, { followError: res?.statusText, followForm: true });
 		}
 	},
 	removeItem: async ({ request, cookies, params }) => {
@@ -41,9 +41,9 @@ export const actions = {
 		});
 
 		if (!res.ok) {
-			throw redirect(303, `/playlist/${playlist}?error=${res.statusText}`);
+			redirect(303, `/playlist/${playlist}?error=${res.statusText}`);
 		}
 
-		throw redirect(303, `/playlist/${playlist}?success=Track removed successfully!`);
+		redirect(303, `/playlist/${playlist}?success=Track removed successfully!`);
 	}
 };

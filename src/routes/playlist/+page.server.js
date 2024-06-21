@@ -19,7 +19,7 @@ export const actions = {
 		});
 
 		if (!res.ok) {
-			throw redirect(
+			redirect(
 				303,
 				redirectTo
 					? `${redirectTo}?error=${res.statusText}`
@@ -28,9 +28,9 @@ export const actions = {
 		}
 
 		if (redirectTo) {
-			throw redirect(303, `${redirectTo}?success=Track added successfully!`);
+			redirect(303, `${redirectTo}?success=Track added successfully!`);
 		} else {
-			throw redirect(303, `/playlist/${playlist}?success=Track added successfully!`);
+			redirect(303, `/playlist/${playlist}?success=Track added successfully!`);
 		}
 	}
 };

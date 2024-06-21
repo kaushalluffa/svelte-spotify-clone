@@ -32,7 +32,7 @@ export const actions = {
 			});
 		} else {
 			const resJSON = await res.json();
-			throw redirect(303, `/playlist/${resJSON?.id}`);
+			redirect(303, `/playlist/${resJSON?.id}`);
 		}
 	}
 };

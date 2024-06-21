@@ -7,7 +7,7 @@ export const load = async ({ fetch: _fetch, params, parent, depends, route }) =>
 	const { user } = await parent();
 	const artistRes = await fetch(`/api/spotify/artists/${params?.id}`);
 	if (!artistRes.ok) {
-		throw error(artistRes?.status, 'Failed to load artist!');
+		error(artistRes?.status, 'Failed to load artist!');
 	}
 	const artistResJSON = await artistRes?.json();
 

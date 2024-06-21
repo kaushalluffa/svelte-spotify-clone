@@ -6,7 +6,7 @@ export const load = async ({ fetch, params }) => {
 		`/api/spotify/playlists/${params?.id}?${new URLSearchParams({ fields: 'id,name,description' }).toString()}`
 	);
 	if (!playlistRes?.ok) {
-		throw error(playlistRes?.status, 'Failed to load playlist');
+		error(playlistRes?.status, 'Failed to load playlist');
 	}
 	const playlistJSON = await playlistRes.json();
 	return {

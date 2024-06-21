@@ -33,7 +33,7 @@ export const actions = {
 			});
 		} else {
 			if (url?.searchParams?.has('redirect')) {
-				throw redirect(303, `/playlist/${params?.id}`);
+				redirect(303, `/playlist/${params?.id}`);
 			}
 		}
 	}

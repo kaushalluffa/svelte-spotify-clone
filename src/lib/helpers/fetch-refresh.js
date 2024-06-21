@@ -15,7 +15,7 @@ export default async function fetchRefresh(fetch, path) {
 		}
 		const refreshResponse = await window?.refreshPromise;
 		if (!refreshResponse?.ok) {
-			throw error(401, 'Session expired');
+			error(401, 'Session expired');
 		}
 		return fetch(path);
 	} else {

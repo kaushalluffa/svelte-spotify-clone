@@ -20,7 +20,7 @@ export const GET = async ({ cookies }) => {
 	if (data?.error) {
 		cookies.delete('refresh_token', { path: '/' });
 		cookies.delete('access_token', { path: '/' });
-		throw error(401, data?.error_description || data?.error);
+		error(401, data?.error_description || data?.error);
 	}
 	cookies.set('access_token', data?.access_token, { path: '/' });
 	cookies.set('refresh_token', data?.refresh_token, { path: '/' });

@@ -11,7 +11,7 @@ export const load = async ({ fetch, url }) => {
 	const playlistRes = await fetchRefresh(fetch, `/api/spotify/me/playlists?${searchParams}`);
 
 	if (!playlistRes?.ok) {
-		throw error(playlistRes?.status, 'Failed to load playlists');
+		error(playlistRes?.status, 'Failed to load playlists');
 	}
 	const playlistJSON = await playlistRes.json();
 	return {

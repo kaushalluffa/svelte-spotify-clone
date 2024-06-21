@@ -27,7 +27,7 @@ export const GET = async ({ cookies }) => {
 	cookies.set('spotify_auth_challenge_verify', challenge.code_verifier, {
 		path: '/',
 	});
-	throw redirect(
+	 redirect(
 		307,
 		`https://accounts.spotify.com/authorize?${new URLSearchParams({ response_type: 'code', client_id: SPOTIFY_APP_CLIENT_ID, scope, redirect_uri: `${BASE_URL}/api/auth/callback`, state, code_challenge_method: 'S256', code_challenge: challenge.code_challenge })}`
 	);

@@ -11,7 +11,7 @@ export const GET = async ({ url, cookies }) => {
 	const storedChallengeVerifier =
 		cookies.get('spotify_auth_challenge_verify') || null;
 	if (state === null || state !== storedSate) {
-		throw error(400, 'State mismatch');
+		error(400, 'State mismatch');
 	}
 	const response = await fetch('https://accounts.spotify.com/api/token', {
 		method: 'POST',
@@ -29,12 +29,12 @@ export const GET = async ({ url, cookies }) => {
 	});
 	const data = await response.json();
 	if (data?.error) {
-		throw error(400, data?.error_description || data?.error);
+		 error(400, data?.error_description || data?.error);
 	}
 	cookies.delete('spotify_auth_state', { path: '/' });
 	cookies.delete('spotify_auth_challenge_verify', { path: '/' });
 	cookies.set('refresh_token', data?.refresh_token, { path: '/' });
 	cookies.set('access_token', data?.access_token, { path: '/' });
 
-	throw redirect(303, '/');
+	 redirect(303, '/');
 };

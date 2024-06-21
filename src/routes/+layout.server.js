@@ -25,7 +25,7 @@ export const load = async ({ cookies, fetch, url }) => {
 	} else if (profileResponse?.status === 401 && refreshToken) {
 		const refreshResponse = await fetch('/api/auth/refresh');
 		if (refreshResponse?.ok) {
-			throw redirect(307, url?.pathname);
+			redirect(307, url?.pathname);
 		}
 		return { user: null };
 	} else {
